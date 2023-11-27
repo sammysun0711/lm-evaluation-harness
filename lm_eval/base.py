@@ -366,10 +366,14 @@ class BaseLM(LM):
                 inplens.append(inplen)
 
             batched_inps = torch.cat(inps, dim=0)  # [batch, padding_length]
+            ret = self._model_call(batched_inps)
+            #print("ret: ", ret)
+            #print("ret.dtype: ", ret.dtype)
+            #print("ret.shape: ", ret.shape)
             multi_logits = F.log_softmax(
-                self._model_call(batched_inps), dim=-1
+                ret, dim=-1
             ).cpu()  # [batch, padding_length, vocab]
-
+            #print("multi_logits: ", multi_logits)
             for (cache_key, _, _), logits, inp, inplen, cont_toks in zip(
                 chunk, multi_logits, inps, inplens, cont_toks_list
             ):
@@ -404,6 +408,7 @@ class BaseLM(LM):
                     self.cache_hook.add_partial("loglikelihood", cache_key, answer)
 
                 res.append(answer)
+            #print("res: ", res)
 
         return re_ord.get_original(res)
 
