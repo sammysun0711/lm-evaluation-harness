@@ -6,5 +6,6 @@ from . import anthropic_llms
 from . import gguf
 from . import vllm_causallms
 from . import mamba_lm
-
+from . import optimum_lm
+from . import ov_model_classes
 # TODO: implement __all__
